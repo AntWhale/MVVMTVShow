@@ -2,7 +2,6 @@ package com.codinginflow.mvvmtvshow.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.codinginflow.mvvmtvshow.R
@@ -14,7 +13,7 @@ class TVShowsAdapter(val tvShows: List<TVShow>) : RecyclerView.Adapter<TVShowsAd
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TVShowViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val tvShowBinding = DataBindingUtil.inflate<ItemContainerTvShowBinding>(
+        val tvShowBinding = DataBindingUtil.inflate<com.codinginflow.mvvmtvshow.databinding.ItemContainerTvShowBinding>(
             layoutInflater, R.layout.item_container_tv_show, parent, false
         )
         return TVShowViewHolder(tvShowBinding)

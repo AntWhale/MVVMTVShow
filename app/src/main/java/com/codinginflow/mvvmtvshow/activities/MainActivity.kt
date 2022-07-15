@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.codinginflow.mvvmtvshow.R
 import com.codinginflow.mvvmtvshow.adapters.TVShowsAdapter
 import com.codinginflow.mvvmtvshow.databinding.ActivityMainBinding
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     val activityMainBinding by lazy { DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main) }
     val tvShows = arrayListOf<TVShow>()
     lateinit var tvShowsAdapter: TVShowsAdapter
+    private var currentPage = 1
+    private var totalAvailablePages = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,20 +36,42 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.tvShowsRecyclerView.setHasFixedSize(true)
         tvShowsAdapter = TVShowsAdapter(tvShows)
         activityMainBinding.tvShowsRecyclerView.adapter = tvShowsAdapter
+        activityMainBinding.tvShowsRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!activityMainBinding.tvShowsRecyclerView.canScrollVertically(1)){
+                    if(currentPage <= totalAvailablePages){
+                        currentPage += 1
+                        getMostPopularTVShows()
+                    }
+                }
+            }
+        })
         getMostPopularTVShows()
     }
 
 
     private fun getMostPopularTVShows() {
-        activityMainBinding.isLoading = true
+        toggleLoading()
 
-        viewModel.getMostPopularTVShows(0).observe(this){ mostPopularTVShowsResponse ->
-            activityMainBinding.isLoading = false
+        viewModel.getMostPopularTVShows(currentPage).observe(this){ mostPopularTVShowsResponse ->
+            toggleLoading()
 
+            totalAvailablePages = mostPopularTVShowsResponse.pages
+            val oldCount = tvShows.size
             tvShows.addAll(mostPopularTVShowsResponse.tvShows)
-            tvShowsAdapter.notifyDataSetChanged()
+            tvShowsAdapter.notifyItemRangeInserted(oldCount, tvShows.size)
         }
     }
 
+    private fun toggleLoading() {
+        if (currentPage == 1){
+            activityMainBinding.isLoading =
+                !(activityMainBinding.isLoading != null && activityMainBinding.isLoading)
+        } else {
+            activityMainBinding.isLoadingMore =
+                !(activityMainBinding.isLoadingMore != null && activityMainBinding.isLoadingMore)
+        }
+    }
 
 }
