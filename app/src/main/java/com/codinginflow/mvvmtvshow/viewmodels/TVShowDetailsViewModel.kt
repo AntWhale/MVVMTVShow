@@ -8,7 +8,7 @@ import com.codinginflow.mvvmtvshow.responses.TVShowDetailsResponse
 class TVShowDetailsViewModel() : ViewModel() {
     val tvShowDetailsRepository: TVShowDetailsRepository = TVShowDetailsRepository()
 
-    fun getTVShowDetails(tvShowId: String) : LiveData<TVShowDetailsResponse> {
+    fun getTVShowDetails(tvShowId: Int) : LiveData<TVShowDetailsResponse> {
         return tvShowDetailsRepository.getTVShowDetails(tvShowId)
     }
 }

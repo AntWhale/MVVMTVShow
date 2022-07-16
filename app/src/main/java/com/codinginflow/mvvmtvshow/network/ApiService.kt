@@ -12,5 +12,5 @@ interface ApiService {
     fun getMostPopularTVShows(@Query("page") page:Int): Call<TVShowsResponse>
 
     @GET("show-details")
-    fun getTVShowDetails(@Query("q") tvShowId: String): Call<TVShowDetailsResponse>
+    fun getTVShowDetails(@Query("q") tvShowId: Int): Call<TVShowDetailsResponse>
 }

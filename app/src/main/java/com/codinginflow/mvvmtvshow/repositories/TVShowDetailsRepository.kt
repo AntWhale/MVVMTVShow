@@ -12,7 +12,7 @@ import retrofit2.Response
 class TVShowDetailsRepository() {
     val apiService: ApiService = ApiClient.getRetrofit().create(ApiService::class.java)
 
-    fun getTVShowDetails(tvShowId: String): LiveData<TVShowDetailsResponse> {
+    fun getTVShowDetails(tvShowId: Int): LiveData<TVShowDetailsResponse> {
         val data = MutableLiveData<TVShowDetailsResponse>()
         apiService.getTVShowDetails(tvShowId).enqueue(object : Callback<TVShowDetailsResponse> {
             override fun onResponse(

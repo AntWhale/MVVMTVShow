@@ -1,5 +1,6 @@
 package com.codinginflow.mvvmtvshow.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -8,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codinginflow.mvvmtvshow.R
 import com.codinginflow.mvvmtvshow.adapters.TVShowsAdapter
 import com.codinginflow.mvvmtvshow.databinding.ActivityMainBinding
+import com.codinginflow.mvvmtvshow.listeners.TVShowsListener
 import com.codinginflow.mvvmtvshow.models.TVShow
 import com.codinginflow.mvvmtvshow.viewmodels.MostPopularTVShowsViewModel
 
 //api url: https://www.episodate.com/api/
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TVShowsListener {
 
     val viewModel by lazy {
         ViewModelProvider(this).get(MostPopularTVShowsViewModel::class.java)
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun doInitialization() {
         activityMainBinding.tvShowsRecyclerView.setHasFixedSize(true)
-        tvShowsAdapter = TVShowsAdapter(tvShows)
+        tvShowsAdapter = TVShowsAdapter(tvShows, this)
         activityMainBinding.tvShowsRecyclerView.adapter = tvShowsAdapter
         activityMainBinding.tvShowsRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -72,6 +74,17 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.isLoadingMore =
                 !(activityMainBinding.isLoadingMore != null && activityMainBinding.isLoadingMore)
         }
+    }
+
+    override fun onTVShowClicked(tvShow: TVShow) {
+        val intent = Intent(applicationContext, TVShowDetailsActivity::class.java)
+        intent.putExtra("id", tvShow.id)
+        intent.putExtra("name", tvShow.name)
+        intent.putExtra("startDate", tvShow.startDate)
+        intent.putExtra("country", tvShow.country)
+        intent.putExtra("network", tvShow.network)
+        intent.putExtra("status", tvShow.status)
+        startActivity(intent)
     }
 
 }
